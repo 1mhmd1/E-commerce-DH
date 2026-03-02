@@ -2,17 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import { prisma } from "../lib/prisma";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import jwtUserPayload from "../utils/jwtUserPayload";
 import {
   ACCESS_TOKEN_SECRET,
   TOKEN_EXPIRE,
   REFRESH_TOKEN_SECRET,
 } from "../config/jwt";
 
-interface jwtUserPayload {
-  //tentative
-  username: string;
-  role: string;
-}
 
 interface AuthRequest extends Request {
   user?: jwtUserPayload;
@@ -42,6 +38,7 @@ export const login = async (
     }
 
     const payload: jwtUserPayload = {
+      id: userExists.id,
       username: userExists.username,
       role: userExists.role,
     };
@@ -134,6 +131,7 @@ export const refreshAccessToken = async(
         }
 
         const payload: jwtUserPayload = {
+            id: user.id,
             username: user.username,
             role: user.role
         }
