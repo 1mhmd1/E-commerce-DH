@@ -1,0 +1,13 @@
+{
+  "version": "5.20.0",
+  "dialect": "postgresql",
+  "hash": "72ecc7ee0e7c9e2a0f2c49fa2c23b3a9edc6c0da7cc1f3e8c0e3e0e0e0e0e0e",
+  "name": "init",
+  "steps": [
+    {
+      "stepType": "CreateTable",
+      "model": "Note",
+      "description": "Create table for notes with timestamps"
+    }
+  ]
+}
