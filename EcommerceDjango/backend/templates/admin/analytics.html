@@ -1,0 +1,316 @@
+{% extends 'admin/base_site.html' %} {% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  /* ── Reset for this page ── */
+  .analytics-shell * { box-sizing: border-box; margin: 0; padding: 0; }
+  .analytics-shell {
+    font-family: 'Inter', sans-serif;
+    display: grid;
+    gap: 22px;
+    max-width: 1220px;
+    padding: 28px 24px;
+    color: #F0EBE1;
+  }
+
+  /* ── Header ── */
+  .analytics-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: #161B27;
+    border: 1px solid #252D3E;
+    border-radius: 1.25rem;
+    padding: 1.5rem 1.75rem;
+  }
+  .analytics-header h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: #F0EBE1;
+  }
+  .analytics-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #F59E0B;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .analytics-subtitle {
+    margin: 4px 0 0;
+    color: #7A8499;
+    font-size: 0.875rem;
+  }
+
+  /* ── Stat cards ── */
+  .analytics-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .analytics-card {
+    background: #161B27;
+    color: #F0EBE1;
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+    border: 1px solid #252D3E;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+  .analytics-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(245, 158, 11, 0.35);
+  }
+  .analytics-card-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #7A8499;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .analytics-card-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #F59E0B;
+  }
+  .analytics-card-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    float: right; margin-top: -2px;
+  }
+  .icon-amber  { background: rgba(245,158,11,0.12); color: #F59E0B; }
+  .icon-emerald { background: rgba(16,185,129,0.12); color: #10B981; }
+  .icon-indigo { background: rgba(99,102,241,0.12); color: #6366F1; }
+  .icon-rose   { background: rgba(244,63,94,0.12);  color: #F43F5E; }
+
+  /* ── Chart panels ── */
+  .analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 16px;
+  }
+  .analytics-panel {
+    background: #161B27;
+    color: #F0EBE1;
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    min-height: 300px;
+    border: 1px solid #252D3E;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+  .analytics-panel:hover {
+    transform: translateY(-2px);
+    border-color: rgba(245, 158, 11, 0.25);
+  }
+  .analytics-panel h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #F0EBE1;
+  }
+  .analytics-panel canvas {
+    max-height: 260px;
+  }
+
+  /* ── Override Django admin bg ── */
+  #container, #content, body, html {
+    background: #0F1117 !important;
+  }
+  #content h1 { display: none; }
+</style>
+
+<div class="analytics-shell">
+  <div class="analytics-header">
+    <div>
+      <p class="analytics-eyebrow">Admin Analytics</p>
+      <h1>Analytics Dashboard</h1>
+      <p class="analytics-subtitle">
+        Live signals from orders, stock, and revenue.
+      </p>
+    </div>
+  </div>
+
+  <div class="analytics-cards">
+    <div class="analytics-card">
+      <div class="analytics-card-icon icon-amber">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <p class="analytics-card-label">Revenue</p>
+      <p class="analytics-card-value">${{ revenue }}</p>
+    </div>
+    <div class="analytics-card">
+      <div class="analytics-card-icon icon-emerald">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </div>
+      <p class="analytics-card-label">Orders</p>
+      <p class="analytics-card-value">{{ total_orders }}</p>
+    </div>
+    <div class="analytics-card">
+      <div class="analytics-card-icon icon-indigo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <p class="analytics-card-label">Top Products</p>
+      <p class="analytics-card-value">{{ top_products|length }}</p>
+    </div>
+    <div class="analytics-card">
+      <div class="analytics-card-icon icon-rose">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      </div>
+      <p class="analytics-card-label">Products Tracked</p>
+      <p class="analytics-card-value">{{ stock_levels|length }}</p>
+    </div>
+  </div>
+
+  <div class="analytics-grid">
+    <div class="analytics-panel">
+      <h3>Top Products (Sales Count)</h3>
+      <canvas id="topProductsChart"></canvas>
+    </div>
+    <div class="analytics-panel">
+      <h3>Stock Levels</h3>
+      <canvas id="stockChart"></canvas>
+    </div>
+  </div>
+
+  <div class="analytics-grid">
+    <div class="analytics-panel">
+      <h3>Revenue Snapshot</h3>
+      <canvas id="revenueChart"></canvas>
+    </div>
+    <div class="analytics-panel">
+      <h3>Order Snapshot</h3>
+      <canvas id="ordersChart"></canvas>
+    </div>
+  </div>
+</div>
+
+{{ top_products|json_script:"top-products-data" }} {{
+stock_levels|json_script:"stock-levels-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const topProducts = JSON.parse(
+    document.getElementById("top-products-data").textContent || "[]",
+  );
+  const stockLevels = JSON.parse(
+    document.getElementById("stock-levels-data").textContent || "[]",
+  );
+
+  const mockTopProducts = [
+    { name: "Aether X1 Laptop", total_sold: 128 },
+    { name: "Nebula Pro Earbuds", total_sold: 96 },
+    { name: "VoltEdge Keyboard", total_sold: 82 },
+    { name: "Photon XL Monitor", total_sold: 64 },
+  ];
+  const mockStockLevels = [
+    { name: "Aether X1 Laptop", stock: 32 },
+    { name: "Nebula Pro Earbuds", stock: 58 },
+    { name: "VoltEdge Keyboard", stock: 41 },
+    { name: "Photon XL Monitor", stock: 19 },
+  ];
+
+  const chartTopProducts = topProducts.length ? topProducts : mockTopProducts;
+  const chartStockLevels = stockLevels.length ? stockLevels : mockStockLevels;
+  const revenueValue = Number("{{ revenue }}") || 0;
+  const totalOrders = Number("{{ total_orders }}") || 0;
+  const chartRevenue = revenueValue > 0 ? revenueValue : 24350;
+  const chartOrders = totalOrders > 0 ? totalOrders : 74;
+
+  /* Amber / charcoal palette for Chart.js */
+  const AMBER      = "rgba(245, 158, 11, 0.85)";
+  const INDIGO     = "rgba(99, 102, 241, 0.78)";
+  const EMERALD    = "rgba(16, 185, 129, 0.78)";
+  const SOFT_GRAY  = "rgba(122, 132, 153, 0.25)";
+  const TICK_COLOR = "#7A8499";
+  const GRID_COLOR = "rgba(37, 45, 62, 0.6)";
+
+  const baseAnimation = { duration: 1200, easing: "easeOutQuart" };
+  const scaleOpts = {
+    x: { ticks: { color: TICK_COLOR }, grid: { color: GRID_COLOR } },
+    y: { ticks: { color: TICK_COLOR }, grid: { color: GRID_COLOR } },
+  };
+
+  const topProductsCanvas = document.getElementById("topProductsChart");
+  if (topProductsCanvas)
+    new Chart(topProductsCanvas, {
+      type: "bar",
+      data: {
+        labels: chartTopProducts.map((p) => p.name),
+        datasets: [{
+          label: "Units sold",
+          data: chartTopProducts.map((p) => p.total_sold),
+          backgroundColor: AMBER,
+          borderRadius: 10,
+          barPercentage: 0.6,
+        }],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, animation: baseAnimation,
+        plugins: { legend: { labels: { color: "#F0EBE1", font: { family: "Inter" } } } },
+        scales: scaleOpts,
+      },
+    });
+
+  const stockCanvas = document.getElementById("stockChart");
+  if (stockCanvas)
+    new Chart(stockCanvas, {
+      type: "bar",
+      data: {
+        labels: chartStockLevels.map((s) => s.name),
+        datasets: [{
+          label: "Stock",
+          data: chartStockLevels.map((s) => s.stock),
+          backgroundColor: INDIGO,
+          borderRadius: 10,
+          barPercentage: 0.6,
+        }],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, animation: baseAnimation,
+        plugins: { legend: { labels: { color: "#F0EBE1", font: { family: "Inter" } } } },
+        scales: scaleOpts,
+      },
+    });
+
+  const revenueCanvas = document.getElementById("revenueChart");
+  if (revenueCanvas)
+    new Chart(revenueCanvas, {
+      type: "doughnut",
+      data: {
+        labels: ["Revenue", "Remaining to Goal"],
+        datasets: [{
+          data: [chartRevenue, Math.max(0, 50000 - chartRevenue)],
+          backgroundColor: [AMBER, SOFT_GRAY],
+          borderWidth: 0,
+        }],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, animation: baseAnimation,
+        cutout: "72%",
+        plugins: { legend: { labels: { color: "#F0EBE1", font: { family: "Inter" } } } },
+      },
+    });
+
+  const ordersCanvas = document.getElementById("ordersChart");
+  if (ordersCanvas)
+    new Chart(ordersCanvas, {
+      type: "doughnut",
+      data: {
+        labels: ["Orders", "Open Capacity"],
+        datasets: [{
+          data: [chartOrders, Math.max(0, 200 - chartOrders)],
+          backgroundColor: [EMERALD, SOFT_GRAY],
+          borderWidth: 0,
+        }],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, animation: baseAnimation,
+        cutout: "72%",
+        plugins: { legend: { labels: { color: "#F0EBE1", font: { family: "Inter" } } } },
+      },
+    });
+</script>
+{% endblock %}

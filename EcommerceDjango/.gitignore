@@ -1,0 +1,73 @@
+# ─── Python ────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.pytest_cache/
+
+# ─── Django ────────────────────────────────────────────────
+*.sqlite3
+staticfiles/
+media/
+local_settings.py
+
+# ─── Environment / Secrets ─────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ─── Virtual Environments ──────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ─── Node / Frontend ───────────────────────────────────────
+node_modules/
+frontend/dist/
+frontend/build/
+.npm
+.yarn
+*.local
+
+# ─── Vite cache ────────────────────────────────────────────
+frontend/.vite/
+
+# ─── OS / Editor ───────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ─── Logs ──────────────────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── Coverage ──────────────────────────────────────────────
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# ─── Misc ──────────────────────────────────────────────────
+.cache/
+*.bak
+*.tmp
