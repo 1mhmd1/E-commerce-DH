@@ -1,8 +1,0 @@
--- CreateTable
-CREATE TABLE "Note" (
-    "id" SERIAL NOT NULL PRIMARY KEY,
-    "title" VARCHAR(120) NOT NULL,
-    "content" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL
-);
